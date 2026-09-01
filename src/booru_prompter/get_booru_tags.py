@@ -1,7 +1,6 @@
 import json
-from urllib.request import urlopen, urlretrieve, Request
+from urllib.request import urlopen
 from urllib import parse
-import folder_paths
 from .configmanager import config
 
 
