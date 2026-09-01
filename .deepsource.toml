@@ -12,4 +12,4 @@ name = "javascript"
 enabled = true
 
 [analyzers.meta]
-plugins = ["Vue"]
+plugins = ["vue"]
