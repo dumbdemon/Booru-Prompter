@@ -1,0 +1,19 @@
+name: Add Booru Site
+description: Add a Booru site to the extension
+title: "[Booru Site] "
+assignees: dumbdemon
+body:
+  - type: input
+    attributes:
+      label: Booru Site
+      description: "Type the URL of the booru site."
+      placeholder: "https://danbooru.donmai.us/"
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: I have checked that this site is not in the extension.
+      description: "Make sure this site isn't already in the extention."
+      options:
+        - label: I have checked.
+          required: true
