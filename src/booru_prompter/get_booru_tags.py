@@ -46,7 +46,7 @@ def grabtagsbyurl(url: str, remove_underscores: bool) -> {}:
     else:
         raise ValueError from None
 
-    with urlopen(req) as response:
+    with urlopen(req) as response:  # skipcq: BAN-B310
         data = json.load(response.read())
 
         all_tags = {

@@ -29,7 +29,13 @@ class GetTagsByURL(io.ComfyNode):
             category=BooruPrompter,
             inputs=[
                 io.String.Input("booru_url", multiline=False),
-                io.Boolean.Input("remove_underscores", display_name="Remove Underscores", default=False, label_on="Yes", label_off="No"),
+                io.Boolean.Input(
+                    "remove_underscores",
+                    display_name="Remove Underscores",
+                    default=False,
+                    label_on="Yes",
+                    label_off="No",
+                ),
                 io.String.Input("exclude_tags", multiline=True),
             ],
             outputs=[
@@ -56,10 +62,10 @@ class GetTagsByURL(io.ComfyNode):
         meta_tags = the_tags.get("meta_tags")
         all_tags = ""
 
-        for key, value in the_tags.items():
+        for value in the_tags.values():
             all_tags = f"{all_tags},{value}"
 
-        return io.NodeOutput(all_tags, tags, artist_tags, character_tags, copyright_tags, meta_tags)
+        return io.NodeOutput(all_tags, tags, artist_tags, character_tags, copyright_tags, meta_tags)  # skipcq: FLK-E501
 
 
 class GetTagsByCode(io.ComfyNode):
@@ -71,7 +77,13 @@ class GetTagsByCode(io.ComfyNode):
             category=BooruPrompter,
             inputs=[
                 io.String.Input("booru_id", multiline=False),
-                io.Boolean.Input("remove_underscores", display_name="Remove Underscores", default=False, label_on="Yes", label_off="No"),
+                io.Boolean.Input(
+                    "remove_underscores",
+                    display_name="Remove Underscores",
+                    default=False,
+                    label_on="Yes",
+                    label_off="No",
+                ),
                 io.String.Input("exclude_tags", multiline=True),
             ],
             outputs=[
@@ -98,7 +110,7 @@ class GetTagsByCode(io.ComfyNode):
         meta_tags = the_tags.get("meta_tags")
         all_tags = ""
 
-        for key, value in the_tags.items():
+        for value in the_tags.values():
             all_tags = f"{all_tags},{value}"
 
-        return io.NodeOutput(all_tags, tags, artist_tags, character_tags, copyright_tags, meta_tags)
+        return io.NodeOutput(all_tags, tags, artist_tags, character_tags, copyright_tags, meta_tags)  # skipcq: FLK-E501
