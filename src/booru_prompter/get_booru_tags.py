@@ -27,7 +27,7 @@ def grabtagsbyurl(url: str, remove_underscores: bool):
 
     if not url[-4:] == "json":
         url = url + ".json"
-    
+
     url +="?"
 
     username, api_token = getauth()
