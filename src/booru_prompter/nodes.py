@@ -56,7 +56,7 @@ class GetTagsByURL(io.ComfyNode):
         meta_tags = the_tags.get("meta_tags")
         all_tags = ""
 
-        for key, value in the_tags:
+        for key, value in the_tags.items():
             all_tags = f"{all_tags},{value}"
 
         return io.NodeOutput(all_tags, tags, artist_tags, character_tags, copyright_tags, meta_tags)
@@ -98,7 +98,7 @@ class GetTagsByCode(io.ComfyNode):
         meta_tags = the_tags.get("meta_tags")
         all_tags = ""
 
-        for key, value in the_tags:
+        for key, value in the_tags.items():
             all_tags = f"{all_tags},{value}"
 
         return io.NodeOutput(all_tags, tags, artist_tags, character_tags, copyright_tags, meta_tags)

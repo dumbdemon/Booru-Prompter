@@ -1,5 +1,5 @@
 import json
-from urllib.request import urlopen
+from urllib.request import urlopen, Request
 from .configmanager import config
 
 
@@ -21,7 +21,7 @@ def grabtagsbycode(code: int, remove_underscores: bool):
     return grabtagsbyurl(f"{HostURL}posts/{code}", remove_underscores)
 
 
-def grabtagsbyurl(url: str, remove_underscores: bool) -> dict():
+def grabtagsbyurl(url: str, remove_underscores: bool) -> {}:
     index = url.find("?")
     if index > -1:
         url = url[:index]
@@ -42,19 +42,21 @@ def grabtagsbyurl(url: str, remove_underscores: bool) -> dict():
     print(url)
 
     if url.lower().startswith("http"):
-        response = urlopen(url)
+        req = Request(url)
     else:
         raise ValueError from None
-    data = json.load(response.read())
 
-    all_tags = {
-        "tags": butify(data["tag_string_general"], remove_underscores),
-        "artist_tags": data["tag_string_artist"],
-        "character_tags": data["tag_string_character"],
-        "copyright_tags": data["tag_string_copyright"],
-        "meta_tags": data["tag_string_meta"],
-    }
+    with urlopen(req) as response:
+        data = json.load(response.read())
 
-    # todo: Create cache if not erxist and add to it
+        all_tags = {
+            "tags": butify(data["tag_string_general"], remove_underscores),
+            "artist_tags": data["tag_string_artist"],
+            "character_tags": data["tag_string_character"],
+            "copyright_tags": data["tag_string_copyright"],
+            "meta_tags": data["tag_string_meta"],
+        }
 
-    return all_tags
+        # todo: Create cache if not erxist and add to it
+
+        return all_tags
