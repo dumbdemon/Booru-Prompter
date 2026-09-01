@@ -15,7 +15,7 @@ def remove_tags(tags: str, to_remove: str) -> str:
     final_list = []
 
     for tag in tags_list:
-        if not tag in remove_list:
+        if tag not in remove_list:
             final_list.append(tag)
     return ",".join(final_list)
 
@@ -39,12 +39,11 @@ class GetTagsByURL(io.ComfyNode):
                 io.String.Output("character"),
                 io.String.Output("copyright"),
                 io.String.Output("meta"),
-            ]
+            ],
         )
 
-
     @classmethod
-    def execute(cls, booru_url: str, remove_underscores: bool, exclude_tags:str) ->  io.NodeOutput:
+    def execute(cls, booru_url: str, remove_underscores: bool, exclude_tags: str) -> io.NodeOutput:
         tags, artist_tags, character_tags, copyright_tags, meta_tags = grabtagsbyurl(booru_url, remove_underscores)
         tags = remove_tags(tags, exclude_tags)
         all_tags = f"{tags}.{artist_tags}.{character_tags}.{copyright_tags},{meta_tags}"
@@ -61,7 +60,7 @@ class GetTagsByCode(io.ComfyNode):
             inputs=[
                 io.String.Input("booru_id", multiline=False),
                 io.Boolean.Input("remove_underscores", display_name="Remove Underscores", default=False, label_on="Yes", label_off="No"),
-                io.String.Input("exclude_tags", multiline=True)
+                io.String.Input("exclude_tags", multiline=True),
             ],
             outputs=[
                 io.String.Output("all"),
@@ -70,12 +69,11 @@ class GetTagsByCode(io.ComfyNode):
                 io.String.Output("character"),
                 io.String.Output("copyright"),
                 io.String.Output("meta"),
-            ]
+            ],
         )
 
-
     @classmethod
-    def execute(cls, booru_id: int, remove_underscores: bool, exclude_tags: str) ->  io.NodeOutput:
+    def execute(cls, booru_id: int, remove_underscores: bool, exclude_tags: str) -> io.NodeOutput:
         tags, artist_tags, character_tags, copyright_tags, meta_tags = grabtagsbycode(booru_id, remove_underscores)
         tags = remove_tags(tags, exclude_tags)
         all_tags = f"{tags}.{artist_tags}.{character_tags}.{copyright_tags}.{meta_tags}"
