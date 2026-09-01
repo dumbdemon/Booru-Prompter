@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "booru_prompter"
-version = "0.0.1"
+version = "0.1.0"
 description = "Get a tag-based prompt from a booru post."
 authors = [{ name = "Dumb Demon", email = "ecchimanga@outlook.com" }]
 readme = "README.md"
 license = { text = "MIT license" }
 requires-python = ">=3.10"
 classifiers = []
-dependencies = []
+dependencies = ["pyyaml"]
 
 
 [project.optional-dependencies]
@@ -25,9 +25,9 @@ dev = [
 ]
 
 [project.urls]
-Repository = "https://github.com/dumbdemon/booru_prompter"
-BugTracker = "https://github.com/dumbdemon/booru_prompter/issues"
-Documentation = "https://github.com/dumbdemon/booru_prompter/wiki"
+Repository = "https://github.com/dumbdemon/Booru-Prompter"
+BugTracker = "https://github.com/dumbdemon/Booru-Prompter/issues"
+Documentation = "https://github.com/dumbdemon/Booru-Prompter/wiki"
 
 
 [tool.comfy]
@@ -35,7 +35,7 @@ PublisherId = "dumbdemon"
 DisplayName = "Booru Prompter"
 Icon = ""
 Tags = []
-Repository = "https://github.com/dumbdemon/booru_prompter"
+Repository = "https://github.com/dumbdemon/Booru-Prompter"
 
 includes = []
 

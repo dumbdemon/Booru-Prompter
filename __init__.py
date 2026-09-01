@@ -1,16 +1,15 @@
-"""Top-level package for booru_prompter."""
+from comfy_api.latest import io, ComfyExtension
+from .src.booru_prompter.nodes import GetTagsByCode, GetTagsByURL
 
-__all__ = [
-    "NODE_CLASS_MAPPINGS",
-    "NODE_DISPLAY_NAME_MAPPINGS",
-    "WEB_DIRECTORY",
-]
-
-__author__ = """Dumb Demon"""
-__email__ = "ecchimanga@outlook.com"
-__version__ = "0.0.1"
-
-from .src.booru_prompter.nodes import NODE_CLASS_MAPPINGS
-from .src.booru_prompter.nodes import NODE_DISPLAY_NAME_MAPPINGS
 
 WEB_DIRECTORY = "./web"
+
+
+class BooruPrompter(ComfyExtension):
+    @staticmethod
+    async def get_node_list() -> list[type[io.ComfyNode]]:
+        return [GetTagsByCode, GetTagsByURL]
+
+
+async def comfy_entrypoint() -> ComfyExtension:
+    return BooruPrompter()
