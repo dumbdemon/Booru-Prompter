@@ -21,7 +21,7 @@ def grabtagsbycode(code: int, remove_underscores: bool):
     return grabtagsbyurl(f"{HostURL}posts/{code}", remove_underscores)
 
 
-def grabtagsbyurl(url: str, remove_underscores: bool):
+def grabtagsbyurl(url: str, remove_underscores: bool) -> dict():
     index = url.find("?")
     if index > -1:
         url = url[:index]
@@ -41,15 +41,20 @@ def grabtagsbyurl(url: str, remove_underscores: bool):
 
     print(url)
 
-    response = urlopen(url)
+    if url.lower().startswith("http"):
+        response = urlopen(url)
+    else:
+        raise ValueError from None
     data = json.load(response.read())
 
-    tags = butify(data["tag_string_general"], remove_underscores)
-    artist_tags = data["tag_string_artist"]
-    character_tags = data["tag_string_character"]
-    copyright_tags = data["tag_string_copyright"]
-    meta_tags = data["tag_string_meta"]
+    all_tags = {
+        "tags": butify(data["tag_string_general"], remove_underscores),
+        "artist_tags": data["tag_string_artist"],
+        "character_tags": data["tag_string_character"],
+        "copyright_tags": data["tag_string_copyright"],
+        "meta_tags": data["tag_string_meta"],
+    }
 
     # todo: Create cache if not erxist and add to it
 
-    return (tags, artist_tags, character_tags, copyright_tags, meta_tags)
+    return all_tags

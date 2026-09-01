@@ -43,10 +43,22 @@ class GetTagsByURL(io.ComfyNode):
         )
 
     @classmethod
-    def execute(cls, booru_url: str, remove_underscores: bool, exclude_tags: str) -> io.NodeOutput:
-        tags, artist_tags, character_tags, copyright_tags, meta_tags = grabtagsbyurl(booru_url, remove_underscores)
-        tags = remove_tags(tags, exclude_tags)
-        all_tags = f"{tags}.{artist_tags}.{character_tags}.{copyright_tags},{meta_tags}"
+    def execute(cls, **kwargs) -> io.NodeOutput:
+        booru_url = kwargs.get("booru_url", "")
+        remove_underscores = kwargs.get("remove_underscores", False)
+        exclude_tags = kwargs.get("exclude_tags", "")
+
+        the_tags = grabtagsbyurl(booru_url, remove_underscores)
+        tags = remove_tags(the_tags.get("tags"), exclude_tags)
+        artist_tags = the_tags.get("artist_tags")
+        character_tags = the_tags.get("character_tags")
+        copyright_tags = the_tags.get("copyright_tags")
+        meta_tags = the_tags.get("meta_tags")
+        all_tags = ""
+
+        for key, value in the_tags:
+            all_tags = f"{all_tags},{value}"
+
         return io.NodeOutput(all_tags, tags, artist_tags, character_tags, copyright_tags, meta_tags)
 
 
@@ -73,8 +85,20 @@ class GetTagsByCode(io.ComfyNode):
         )
 
     @classmethod
-    def execute(cls, booru_id: int, remove_underscores: bool, exclude_tags: str) -> io.NodeOutput:
-        tags, artist_tags, character_tags, copyright_tags, meta_tags = grabtagsbycode(booru_id, remove_underscores)
-        tags = remove_tags(tags, exclude_tags)
-        all_tags = f"{tags}.{artist_tags}.{character_tags}.{copyright_tags}.{meta_tags}"
+    def execute(cls, **kwargs) -> io.NodeOutput:
+        booru_id = kwargs.get("booru_id", 0)
+        remove_underscores = kwargs.get("remove_underscores", False)
+        exclude_tags = kwargs.get("exclude_tags", "")
+
+        the_tags = grabtagsbycode(booru_id, remove_underscores)
+        tags = remove_tags(the_tags.get("tags"), exclude_tags)
+        artist_tags = the_tags.get("artist_tags")
+        character_tags = the_tags.get("character_tags")
+        copyright_tags = the_tags.get("copyright_tags")
+        meta_tags = the_tags.get("meta_tags")
+        all_tags = ""
+
+        for key, value in the_tags:
+            all_tags = f"{all_tags},{value}"
+
         return io.NodeOutput(all_tags, tags, artist_tags, character_tags, copyright_tags, meta_tags)
