@@ -54,7 +54,6 @@ class ConfigManager:
         with config_path.open(encoding="utf-8") as file:
             data = yaml.safe_load(file)
             for key, value in data.items():
-                logging.info(f"{key} >> {value}")
                 self.data[key] = value
         self.load()
 
