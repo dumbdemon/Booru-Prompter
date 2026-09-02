@@ -1,5 +1,5 @@
 from comfy_api.latest import io
-from .get_booru_tags import grabtagsbyurl, grabtagsbycode
+from .get_booru_tags import get_tags_by_code, get_tags_by_url
 import re
 
 
@@ -54,16 +54,13 @@ class GetTagsByURL(io.ComfyNode):
         remove_underscores = kwargs.get("remove_underscores", False)
         exclude_tags = kwargs.get("exclude_tags", "")
 
-        the_tags = grabtagsbyurl(booru_url, remove_underscores)
+        the_tags = get_tags_by_url(booru_url, remove_underscores)
+        all_tags = remove_tags(the_tags.get("all_tags"), exclude_tags)
         tags = remove_tags(the_tags.get("tags"), exclude_tags)
         artist_tags = the_tags.get("artist_tags")
         character_tags = the_tags.get("character_tags")
         copyright_tags = the_tags.get("copyright_tags")
         meta_tags = the_tags.get("meta_tags")
-        all_tags = ""
-
-        for value in the_tags.values():
-            all_tags = f"{all_tags},{value}"
 
         return io.NodeOutput(all_tags, tags, artist_tags, character_tags, copyright_tags, meta_tags)  # skipcq: FLK-E501
 
@@ -102,15 +99,12 @@ class GetTagsByCode(io.ComfyNode):
         remove_underscores = kwargs.get("remove_underscores", False)
         exclude_tags = kwargs.get("exclude_tags", "")
 
-        the_tags = grabtagsbycode(booru_id, remove_underscores)
+        the_tags = get_tags_by_code(booru_id, remove_underscores)
+        all_tags = remove_tags(the_tags.get("all_tags"), exclude_tags)
         tags = remove_tags(the_tags.get("tags"), exclude_tags)
         artist_tags = the_tags.get("artist_tags")
         character_tags = the_tags.get("character_tags")
         copyright_tags = the_tags.get("copyright_tags")
         meta_tags = the_tags.get("meta_tags")
-        all_tags = ""
-
-        for value in the_tags.values():
-            all_tags = f"{all_tags},{value}"
 
         return io.NodeOutput(all_tags, tags, artist_tags, character_tags, copyright_tags, meta_tags)  # skipcq: FLK-E501

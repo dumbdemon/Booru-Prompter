@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "booru_prompter"
-version = "0.1.0"
+version = "0.2.0"
 description = "Get a tag-based prompt from a booru post."
 authors = [{ name = "Dumb Demon", email = "ecchimanga@outlook.com" }]
 readme = "README.md"
 license = { text = "MIT license" }
 requires-python = ">=3.10"
 classifiers = []
-dependencies = ["pyyaml"]
+dependencies = ["pyyaml", "diskcache"]
 
 
 [project.optional-dependencies]

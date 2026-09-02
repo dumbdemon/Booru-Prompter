@@ -1,0 +1,8 @@
+booru_site: https://danbooru.donmai.us/
+booru_username:
+booru_api_token:
+
+cache_purge_on_startup: false
+cache_use_rolling_delete: true
+cache_refresh_on_use: true
+cache_rolling_rate: 7
