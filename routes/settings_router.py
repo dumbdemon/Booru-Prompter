@@ -58,17 +58,15 @@ def register_routes(routes_instance):
                     return success_response(
                         data={"updated": updated_settings, "errors": errors}, message=f"Updated {len(updated_settings)} setting(s)"
                     )
-                else:
-                    return error_response("Failed to save settings", status=500, updated=updated_settings, errors=errors)
+                return error_response("Failed to save settings", status=500, updated=updated_settings, errors=errors)
             else:
                 # No settings needed updating - this is actually a success case
                 # All settings were either already at correct values or invalid
                 if errors:
                     # There were invalid settings, so this is an error
                     return error_response("No valid settings to update", status=400, errors=errors)
-                else:
-                    # All settings were already at correct values - this is success
-                    return success_response(data={"updated": [], "errors": []}, message="All settings already at requested values")
+                # All settings were already at correct values - this is success
+                return success_response(data={"updated": [], "errors": []}, message="All settings already at requested values")
 
         except Exception as e:
             logging.error(f"Settings update error: {str(e)}")
