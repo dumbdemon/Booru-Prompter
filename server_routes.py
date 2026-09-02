@@ -86,21 +86,19 @@ try:
                                 "message": f"Updated {len(updated_settings)} setting(s)",
                             }
                         )
-                    else:
-                        return web.json_response(
-                            {"success": False, "error": "Failed to save settings", "updated": updated_settings, "errors": errors},
-                            status=500,
-                        )
+                    return web.json_response(
+                        {"success": False, "error": "Failed to save settings", "updated": updated_settings, "errors": errors},
+                        status=500,
+                    )
                 else:
                     # No settings needed updating - this could be success or error
                     if errors:
                         # There were invalid settings, so this is an error
                         return web.json_response({"success": False, "error": "No valid settings to update", "errors": errors}, status=400)
-                    else:
-                        # All settings were already at correct values - this is success
-                        return web.json_response(
-                            {"success": True, "updated": [], "errors": [], "message": "All settings already at requested values"}
-                        )
+                    # All settings were already at correct values - this is success
+                    return web.json_response(
+                        {"success": True, "updated": [], "errors": [], "message": "All settings already at requested values"}
+                    )
 
             except Exception as e:
                 return web.json_response({"success": False, "error": f"Failed to update settings: {str(e)}"}, status=500)
