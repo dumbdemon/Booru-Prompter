@@ -73,7 +73,7 @@ async function resetCacheEntries(time) {
 
         const data = await response.json();
         if (data.success) {
-            console.log(`Cache was successfully update to ne time value: ${value}`); // skipcq: JS-0002
+            console.log(`Cache was successfully update to ne time value: ${time}`); // skipcq: JS-0002
             if (data.errors && data.errors.length > 0) {
                 console.warn("Warnings during reset:", data.errors); // skipcq: JS-0002
             }

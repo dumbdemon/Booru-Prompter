@@ -122,7 +122,7 @@ class ConfigManager:
             self._model = BooruSettings.model_validate(updated)
             return True
         except ValidationError:
-            logging.error("Failed to validate: %n%s", traceback.format_exc())
+            logging.error("Failed to validate: \n%s", traceback.format_exc())
             return False
 
     def get_setting_info(self, key: str) -> Optional[Dict[str, Any]]:
@@ -149,7 +149,7 @@ class ConfigManager:
                 return True
         except Exception as e:
             logging.error(
-                "Errors occurred while saving: %s%n%s", e, traceback.format_exc()
+                "Errors occurred while saving: %s\n%s", e, traceback.format_exc()
             )
             return False
 
@@ -166,7 +166,7 @@ _bp_settings: Optional[BooruSettings] = None
 
 
 def get_settings() -> ConfigManager:
-    global _bp_settings
+    global _bp_settings  # skipcq: PYL-W0603
     if _bp_settings is None:
         _bp_settings = ConfigManager()
     return _bp_settings

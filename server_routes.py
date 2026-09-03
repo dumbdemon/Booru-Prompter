@@ -87,7 +87,7 @@ try:
 
                 # Save if any settings were updated
                 if updated_settings:
-                    if settings.save():  # sqipcq: PYL-R1705
+                    if settings.save():
                         return web.json_response(
                             {
                                 "success": True,
@@ -96,7 +96,7 @@ try:
                                 "message": f"Updated {len(updated_settings)} setting(s)",  # skipcq: FLK-E501
                             }
                         )
-                    else:
+                    else:  # skipcq: PYL-R1705
                         return web.json_response(
                             {
                                 "success": False,
@@ -107,7 +107,7 @@ try:
                             status=500,
                         )
                 # No settings needed updating - this could be success or error
-                if errors:  # sqipcq: PYL-R1705
+                if errors:
                     # There were invalid settings, so this is an error
                     return web.json_response(
                         {
@@ -117,7 +117,7 @@ try:
                         },
                         status=400,
                     )
-                else:
+                else:  # skipcq: PYL-R1705
                     # All settings were already at correct values - this is success
                     return web.json_response(
                         {

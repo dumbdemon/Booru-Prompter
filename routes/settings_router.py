@@ -56,12 +56,12 @@ def register_routes(routes_instance):
                     errors.append(f"Unknown setting: '{key}'")
 
             if updated_settings:
-                if settings.save():  # sqipcq: PYL-R1705
+                if settings.save():
                     return success_response(
                         data={"updated": updated_settings, "errors": errors},
                         message=f"Updated {len(updated_settings)} setting(s)",
                     )
-                else:
+                else:  # skipcq: PYL-R1705
                     return error_response(
                         "Failed to save settings",
                         status=500,
@@ -70,12 +70,12 @@ def register_routes(routes_instance):
                     )
             # No settings needed updating - this is actually a success case
             # All settings were either already at correct values or invalid
-            if errors:  # sqipcq: PYL-R1705
+            if errors:
                 # There were invalid settings, so this is an error
                 return error_response(
                     "No valid settings to update", status=400, errors=errors
                 )
-            else:
+            else:  # skipcq: PYL-R1705
                 # All settings were already at correct values - this is success
                 return success_response(
                     data={"updated": [], "errors": []},
