@@ -1,0 +1,17 @@
+name: Suggest Feature
+description: Suggest a feature to be added
+body:
+  - type: textarea
+    attributes:
+      label: Suggestion
+      placeholder: Anime Girls
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Not a Deplicate
+      description: By submitting this, you agree that this is not a deuplicate.
+      options:
+        - label: I agree that I have checked and this is not a duplicate.
+          required: true

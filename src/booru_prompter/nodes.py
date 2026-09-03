@@ -6,18 +6,19 @@ import re
 BooruPrompter = "Booru Prompter"
 
 
-def remove_tags(tags: str, to_remove: str) -> str:
-    if not to_remove:
-        return tags
+def remove_tags(tags: str, to_remove: str = "", add_space: bool = True) -> str:
+    tags_list = re.split(r",\s?", tags)
 
-    remove_list = re.split(r",\s?", to_remove)
-    tags_list = tags.split(",")
-    final_list = []
+    if to_remove:
+        remove_list = re.split(r",\s?", to_remove)
+        final_list = []
 
-    for tag in tags_list:
-        if tag not in remove_list:
-            final_list.append(tag)
-    return ",".join(final_list)
+        for tag in tags_list:
+            if tag not in remove_list:
+                final_list.append(tag)
+        tags_list = final_list
+
+    return f",{" " if add_space else ""}".join(tags_list)
 
 
 class GetTagsByURL(io.ComfyNode):
@@ -33,6 +34,13 @@ class GetTagsByURL(io.ComfyNode):
                     "remove_underscores",
                     display_name="Remove Underscores",
                     default=False,
+                    label_on="Yes",
+                    label_off="No",
+                ),
+                io.Boolean.Input(
+                    "add_space",
+                    display_name="Add Space after Comma",
+                    default=True,
                     label_on="Yes",
                     label_off="No",
                 ),
@@ -52,17 +60,24 @@ class GetTagsByURL(io.ComfyNode):
     def execute(cls, **kwargs) -> io.NodeOutput:
         booru_url = kwargs.get("booru_url", "")
         remove_underscores = kwargs.get("remove_underscores", False)
+        add_space = kwargs.get("add_space", True)
         exclude_tags = kwargs.get("exclude_tags", "")
 
         the_tags = get_tags_by_url(booru_url, remove_underscores)
-        all_tags = remove_tags(the_tags.get("all_tags"), exclude_tags)
-        tags = remove_tags(the_tags.get("tags"), exclude_tags)
-        artist_tags = the_tags.get("artist_tags")
-        character_tags = the_tags.get("character_tags")
-        copyright_tags = the_tags.get("copyright_tags")
-        meta_tags = the_tags.get("meta_tags")
+        all_tags = remove_tags(the_tags.get("all_tags"), exclude_tags, add_space)
+        tags = remove_tags(the_tags.get("tags"), exclude_tags, add_space)
+        artist_tags = remove_tags(the_tags.get("artist_tags"), add_space=add_space)
+        character_tags = remove_tags(
+            the_tags.get("character_tags"), add_space=add_space
+        )
+        copyright_tags = remove_tags(
+            the_tags.get("copyright_tags"), add_space=add_space
+        )
+        meta_tags = remove_tags(the_tags.get("meta_tags"), add_space=add_space)
 
-        return io.NodeOutput(all_tags, tags, artist_tags, character_tags, copyright_tags, meta_tags)  # skipcq: FLK-E501
+        return io.NodeOutput(
+            all_tags, tags, artist_tags, character_tags, copyright_tags, meta_tags
+        )  # skipcq: FLK-E501
 
 
 class GetTagsByCode(io.ComfyNode):
@@ -78,6 +93,13 @@ class GetTagsByCode(io.ComfyNode):
                     "remove_underscores",
                     display_name="Remove Underscores",
                     default=False,
+                    label_on="Yes",
+                    label_off="No",
+                ),
+                io.Boolean.Input(
+                    "add_space",
+                    display_name="Add Space after Comma",
+                    default=True,
                     label_on="Yes",
                     label_off="No",
                 ),
@@ -97,14 +119,21 @@ class GetTagsByCode(io.ComfyNode):
     def execute(cls, **kwargs) -> io.NodeOutput:
         booru_id = kwargs.get("booru_id", 0)
         remove_underscores = kwargs.get("remove_underscores", False)
+        add_space = kwargs.get("add_space", True)
         exclude_tags = kwargs.get("exclude_tags", "")
 
         the_tags = get_tags_by_code(booru_id, remove_underscores)
-        all_tags = remove_tags(the_tags.get("all_tags"), exclude_tags)
-        tags = remove_tags(the_tags.get("tags"), exclude_tags)
-        artist_tags = the_tags.get("artist_tags")
-        character_tags = the_tags.get("character_tags")
-        copyright_tags = the_tags.get("copyright_tags")
-        meta_tags = the_tags.get("meta_tags")
+        all_tags = remove_tags(the_tags.get("all_tags"), exclude_tags, add_space)
+        tags = remove_tags(the_tags.get("tags"), exclude_tags, add_space)
+        artist_tags = remove_tags(the_tags.get("artist_tags"), add_space=add_space)
+        character_tags = remove_tags(
+            the_tags.get("character_tags"), add_space=add_space
+        )
+        copyright_tags = remove_tags(
+            the_tags.get("copyright_tags"), add_space=add_space
+        )
+        meta_tags = remove_tags(the_tags.get("meta_tags"), add_space=add_space)
 
-        return io.NodeOutput(all_tags, tags, artist_tags, character_tags, copyright_tags, meta_tags)  # skipcq: FLK-E501
+        return io.NodeOutput(
+            all_tags, tags, artist_tags, character_tags, copyright_tags, meta_tags
+        )  # skipcq: FLK-E501

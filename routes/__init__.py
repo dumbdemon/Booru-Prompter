@@ -7,7 +7,7 @@ _bp_registered_routes = []
 
 
 def register_routes(routes_instance):
-    global _bp_routes_initialized, _bp_registered_routes
+    global _bp_routes_initialized, _bp_registered_routes  # skipcw:  PYL-W0603
 
     if _bp_routes_initialized:
         logger.warning("Routes already initialized, skipping re-registration")
@@ -15,8 +15,9 @@ def register_routes(routes_instance):
 
     try:
         from . import settings_router
+        from . import cache_router
 
-        route_groups = [("Settings", settings_router)]
+        route_groups = [("Settings", settings_router), ("Cache", cache_router)]
 
         route_count = 0
 
@@ -25,10 +26,18 @@ def register_routes(routes_instance):
                 if hasattr(route_module, "register_routes"):
                     group_count = route_module.register_routes(routes_instance)
                     route_count += group_count
-                    logger.debug(f"Registered {group_count} {group_name} routes successfully")
-                    _bp_registered_routes.extend(route_module.get_route_list() if hasattr(route_module, "get_route_list") else [])
+                    logger.debug(
+                        f"Registered {group_count} {group_name} routes successfully"
+                    )
+                    _bp_registered_routes.extend(
+                        route_module.get_route_list()
+                        if hasattr(route_module, "get_route_list")
+                        else []
+                    )
                 else:
-                    logger.warning(f"Route module {group_name} missing register_routes function")
+                    logger.warning(
+                        f"Route module {group_name} missing register_routes function"
+                    )
             except ImportError as e:
                 logger.warning(f"Could not import {group_name} routes: {e}")
             except Exception as e:
@@ -38,7 +47,9 @@ def register_routes(routes_instance):
                 logger.error(traceback.format_exc())
 
         _bp_routes_initialized = True
-        logger.info(f"BooruPrompter: Registered {route_count} routes across {len(route_groups)} modules")
+        logger.info(
+            f"BooruPrompter: Registered {route_count} routes across {len(route_groups)} modules"
+        )
         return route_count
 
     except Exception as e:
