@@ -90,7 +90,7 @@ class ConfigManager:
             for key, value in data.items():
                 e_value = decrypt(key, value, PathManager())
                 self.data[key] = e_value
-            logging.info(f"{len(self.data)} keys registered")
+            logging.info("%s keys registered", len(self.data))
         self.load()
 
     def load(self) -> None:
@@ -122,7 +122,7 @@ class ConfigManager:
             self._model = BooruSettings.model_validate(updated)
             return True
         except ValidationError:
-            logging.error(f"Failed to validate: \n{traceback.format_exc()}")
+            logging.error("Failed to validate: %n%s", traceback.format_exc())
             return False
 
     def get_setting_info(self, key: str) -> Optional[Dict[str, Any]]:
@@ -149,7 +149,7 @@ class ConfigManager:
                 return True
         except Exception as e:
             logging.error(
-                f"Errors occurred while saving: {e}\n{traceback.format_exc()}"
+                "Errors occurred while saving: %s%n%s", e, traceback.format_exc()
             )
             return False
 

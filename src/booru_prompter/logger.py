@@ -36,7 +36,9 @@ def get_logger(name: Optional[str] = None) -> logging.Logger:
     return logging.getLogger(logger_name)
 
 
-def configure_logging(level: Optional[int] = None, handler: Optional[logging.Handler] = None):
+def configure_logging(
+    level: Optional[int] = None, handler: Optional[logging.Handler] = None
+):  # skipcq: FLK-E501
     logger = _root_logger()
     logger.setLevel(_resolve_log_level(level))
 

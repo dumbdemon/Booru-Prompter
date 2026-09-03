@@ -12,7 +12,7 @@ try:
         _modular_routes_available = True
     except ImportError as e:
         logging.warning(
-            "BooruPrompter: Modular routes not available (%s), using legacy routes only",
+            "BooruPrompter: Modular routes not available (%s), using legacy routes only",  # skipcq: FLK-E501
             e,
         )
         _modular_routes_available = False
@@ -29,7 +29,7 @@ try:
                     logging.warning("Routes not loaded.")
             except Exception as modular_error:
                 logging.error(
-                    "BooruPrompter: Error with modular routes (%s), continuing with legacy routes",
+                    "BooruPrompter: Error with modular routes (%s), continuing with legacy routes",  # skipcq: FLK-E501
                     modular_error,
                 )
 
@@ -87,13 +87,13 @@ try:
 
                 # Save if any settings were updated
                 if updated_settings:
-                    if settings.save():
+                    if settings.save():  # sqipcq: PYL-R1705
                         return web.json_response(
                             {
                                 "success": True,
                                 "updated": updated_settings,
                                 "errors": errors,
-                                "message": f"Updated {len(updated_settings)} setting(s)",
+                                "message": f"Updated {len(updated_settings)} setting(s)",  # skipcq: FLK-E501
                             }
                         )
                     else:
@@ -107,7 +107,7 @@ try:
                             status=500,
                         )
                 # No settings needed updating - this could be success or error
-                if errors:
+                if errors:  # sqipcq: PYL-R1705
                     # There were invalid settings, so this is an error
                     return web.json_response(
                         {

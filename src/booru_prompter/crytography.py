@@ -36,7 +36,7 @@ def _get_or_create_key(path_manager) -> bytes:
                 key = bytes.fromhex(raw.decode("ascii"))
                 if len(key) == _KEY_LEN:
                     return key
-            except (ValueError, UnicodeDecodeError):
+            except ValueError:
                 pass
         logger.info("Replacing old or invalid settings key with new blake3 key.")
 
@@ -114,5 +114,5 @@ def decrypt(key: str, value: Any, path_manager) -> Any:
         raw = base64.urlsafe_b64decode(value.encode("ascii"))
         return _decrypt_bytes(_get_or_create_key(path_manager), raw).decode("utf-8")
     except (ValueError, RuntimeError) as e:
-        logger.warning(f"Unable to decrypt setting '{key}': {e}. Using empty value.")
+        logger.warning("Unable to decrypt setting '%s': %s. Using empty value.", key, e)
         return ""

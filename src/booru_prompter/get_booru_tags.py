@@ -19,7 +19,7 @@ HostURL = get_setting(setting.booru_site)
 userid = get_setting(setting.booru_user_id)
 headers = {"User-Agent": f"BooruPrompter/{version} (user #{userid})"}
 
-logging.info(f"User Agent is {headers["User-Agent"]}")
+logging.info("User Agent is %s", headers["User-Agent"])
 
 
 def butify(string: str, replaceunderscores: bool):
@@ -35,11 +35,35 @@ def get_tags_by_code(code: int, remove_underscores: bool):
     return get_tags_by_url(f"{HostURL}posts/{code}", remove_underscores, code)
 
 
-def get_tags_by_url(url: str, remove_underscores: bool, ref_code=None) -> {}:
+def construct_url(url) -> str:
+    if not url[-4:] == "json":
+        url = url + ".json"
+
+    url += "?"
+
+    username = get_setting(setting.booru_username)
+    api_token = get_setting(setting.booru_api_token)
+
+    if username:
+        url += f"login={username}&"
+
+    if api_token:
+        url += f"api_key={api_token}"
+
+    logging.debug(url)
+    return url
+
+
+def set_duration() -> float or None:
     duration: float = None
     time = timedelta(days=get_setting(setting.cache_rolling_rate, 7))
     if get_setting(setting.cache_refresh_on_use, True):
         duration = time.total_seconds()
+    return duration
+
+
+def get_tags_by_url(url: str, remove_underscores: bool, ref_code=None) -> {}:
+    duration = set_duration()
 
     index = url.find("?")
     if index > -1:
@@ -59,26 +83,13 @@ def get_tags_by_url(url: str, remove_underscores: bool, ref_code=None) -> {}:
         if old_tags is not None and tag is HostURL:
             return cache_manager.get(ref_code)
 
-    if not url[-4:] == "json":
-        url = url + ".json"
-
-    url += "?"
-
-    username = get_setting(setting.booru_username)
-    api_token = get_setting(setting.booru_api_token)
-
-    if username:
-        url += f"login={username}&"
-
-    if api_token:
-        url += f"api_key={api_token}"
-
-    logging.debug(url)
+    url = construct_url(url)
 
     if url.lower().startswith("http"):
         req = Request(url, headers=headers)
     else:
         raise ValueError from None
+    message = None
 
     try:
         with urlopen(req) as response:  # skipcq: BAN-B310

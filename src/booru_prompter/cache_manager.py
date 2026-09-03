@@ -15,6 +15,7 @@ class CacheManager:
 
     def _purge(self):
         if get_setting(setting.cache_purge_on_startup, False):
+            # Check if user wants to purge before checking directory status
             if self.cache_path.exists() and self.cache_path.is_dir():
                 shutil.rmtree(self.cache_path)
                 logger.info("Cache has been purged")
@@ -29,11 +30,14 @@ class CacheManager:
     def set(self, key: str, value: {}, tag: str, expire: float = None):
         self.cache.set(key=key, value=value, expire=expire, tag=tag, retry=True)
 
-    def touch(self, key: str, expire: float):
-        self.cache.touch(key, expire)
+    def touch(self, key: str, expire: float, retry=False):
+        self.cache.touch(key, expire, retry)
 
     def hasattr(self, key: str) -> bool:
         return key in self.cache
+
+    def iterkeys(self, reverse=False):
+        return self.cache.iterkeys(reverse=reverse)
 
 
 cache_manager = CacheManager()

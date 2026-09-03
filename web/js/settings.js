@@ -68,8 +68,19 @@ async function resetCacheEntries(time) {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ ["value"]: time })
+            body: JSON.stringify({ "value": time })
         });
+
+        const data = await response.json();
+        if (data.success) {
+            console.log(`Cache was successfully update to ne time value: ${value}`); // skipcq: JS-0002
+            if (data.errors && data.errors.length > 0) {
+                console.warn("Warnings during reset:", data.errors); // skipcq: JS-0002
+            }
+        } else {
+            console.error("Faile to reset cache", data.error); // skipcq: JS-0002
+        }
+        return data.success;
     } catch (error) {
         console.error("Unable to reset cache:", error); // skipcq: JS-0002
         return false;
@@ -83,7 +94,7 @@ app.registerExtension({
         console.log("Setting up BooruPrompter settings integration..."); // skipcq: JS-0002
 
         // Load current settings from server
-        const serverSettings = await loadSageSettings();
+        const serverSettings = await loadBooruSettings();
         if (!serverSettings) {
             console.warn("Could not load BooruPrompter settings from server - settings will use defaults"); // skipcq: JS-0002
             return;

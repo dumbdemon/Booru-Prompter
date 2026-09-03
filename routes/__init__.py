@@ -7,7 +7,7 @@ _bp_registered_routes = []
 
 
 def register_routes(routes_instance):
-    global _bp_routes_initialized, _bp_registered_routes  # skipcw:  PYL-W0603
+    global _bp_routes_initialized, _bp_registered_routes  # skipcq:  PYL-W0603
 
     if _bp_routes_initialized:
         logger.warning("Routes already initialized, skipping re-registration")
@@ -48,7 +48,9 @@ def register_routes(routes_instance):
 
         _bp_routes_initialized = True
         logger.info(
-            f"BooruPrompter: Registered {route_count} routes across {len(route_groups)} modules"
+            "BooruPrompter: Registered %s routes across %s modules",
+            route_count,
+            len(route_groups),
         )
         return route_count
 

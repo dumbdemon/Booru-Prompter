@@ -39,10 +39,11 @@ def validate_json_body(*required_fields):
                 )
             missing_fields = [f for f in required_fields if not data.get(f)]
             if missing_fields:
+                message = ", ".join(missing_fields)
                 return web.json_response(
                     {
                         "success": False,
-                        "error": f"Missing required fields: {', '.join(missing_fields)}",
+                        "error": f"Missing required fields: {message}",
                     },
                     status=400,
                 )
@@ -60,10 +61,11 @@ def validate_query_params(*required_params):
         async def wrapper(request):
             missing_params = [p for p in required_params if not request.query.get(p)]
             if missing_params:
+                message = ", ".join(missing_params)
                 return web.json_response(
                     {
                         "success": False,
-                        "error": f"Missing required query parameters: {', '.join(missing_params)}",
+                        "error": f"Missing required query parameters: {message}",
                     },
                     status=400,
                 )
@@ -83,9 +85,21 @@ def success_response(data=None, message=None):
     return web.json_response(body)
 
 
-def error_response(message, status=400, errors=[], updated=[]):
+def error_response(message, status=400, errors=None, updated=None):
+    if errors is None:
+        errors = []
+
+    if updated is None:
+        updated = []
+
     return web.json_response(
-        {"success": False, "error": message, "err_messages": errors}, status=status
+        {
+            "success": False,
+            "error": message,
+            "err_messages": errors,
+            "updaetd": updated,
+        },
+        status=status,
     )
 
 

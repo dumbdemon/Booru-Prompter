@@ -12,7 +12,7 @@ def register_routes(routes_instance):
     @route_error_handler
     async def reset_all_cache_timer(request):
         try:
-            from ..src.booru_prompter.managers import cache
+            from ..src.booru_prompter.cache_manager import cache_manager
             from datetime import timedelta
 
             data = await request.json()
@@ -20,9 +20,9 @@ def register_routes(routes_instance):
             duration: float = time.total_seconds()
             errors = 0
 
-            for key in cache.iterkeys():
+            for key in cache_manager.iterkeys():
                 try:
-                    cache.touch(key, duration, True)
+                    cache_manager.touch(key, duration, True)
                 except TimeoutError:
                     errors += 1
 
