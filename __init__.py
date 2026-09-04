@@ -11,7 +11,7 @@ configure_logging()
 try:
     from . import server_routes
 except Exception as e:
-    logger.warning(f"Failed to load SageUtils custom routes: {e}")
+    logger.warning("Failed to load BooruPrompter custom routes: %s", e)
 
 
 class BooruPrompter(ComfyExtension):
