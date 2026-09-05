@@ -54,11 +54,13 @@ class BooruTags:
             "meta_tags": self._check_count(self.meta_tags),
         }
 
-    def _check_count(self, tags) -> int:
+    @staticmethod
+    def _check_count(tags) -> int:
         a_list = re.split(r",\s?", tags)
         return len(a_list) if tags else 0
 
-    def _check_empty(self, tags) -> list[Any]:
+    @staticmethod
+    def _check_empty(tags) -> list[Any]:
         a_list = re.split(r",\s?", tags)
         return a_list if tags else []
 
