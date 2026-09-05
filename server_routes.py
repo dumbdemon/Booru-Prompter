@@ -4,7 +4,7 @@ import logging
 try:
     from server import PromptServer
     from aiohttp import web
-    from .src.booru_prompter.managers import get_settings, is_known_setting
+    from .src.booru_prompter.config_manager import get_settings, is_known_setting
 
     try:
         from .routes import register_routes
@@ -137,7 +137,7 @@ try:
         @routes.post("/booru/settings/reset")
         async def reset_boooru_settings(request):
             """
-            Resets all SageUtils settings to their default values.
+            Resets all BooruPrompter settings to their default values.
             """
             try:
                 settings = get_settings()
@@ -157,7 +157,7 @@ try:
 
 except ImportError as e:
     logging.warning(
-        "Warning: Could not import required modules for SageUtils routes: %s", e
+        "Warning: Could not import required modules for BooruPrompter routes: %s", e
     )
 except Exception as e:
-    logging.error("Warning: Error setting up SageUtils routes: %s", e)
+    logging.error("Warning: Error setting up BooruPrompter routes: %s", e)

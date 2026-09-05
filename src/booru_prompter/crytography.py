@@ -3,6 +3,7 @@ import base64
 from typing import Any
 from pathlib import Path
 from .logger import get_logger
+from .paths_manager import paths
 
 logger = get_logger("crytography")
 
@@ -20,13 +21,13 @@ _MAC_LEN = 32
 _KEY_LEN = 32
 
 
-def _get_or_create_key(path_manager) -> bytes:
+def _get_or_create_key() -> bytes:
     if not _BLAKE3_AVAILABLE:
         raise RuntimeError(
             "blake3 is required for encrypted settings. It is bundled with ComfyUI."
         )
 
-    key_path: Path = path_manager.get_user_path(KEY_FILENAME)
+    key_path: Path = paths.get_user_path(KEY_FILENAME)
     if key_path.is_file():
         raw = key_path.read_bytes().strip()
         # Expect 64 hex chars encoding 32 bytes.  Old Fernet keys are 44 chars;
@@ -86,7 +87,7 @@ def _decrypt_bytes(key: bytes, data: bytes) -> bytes:
     return bytes(c ^ k for c, k in zip(ciphertext, keystream))
 
 
-def encrypt(key: str, value: Any, path_manager) -> Any:
+def encrypt(key: str, value: Any) -> Any:
     if value is None:
         return ""
 
@@ -98,12 +99,12 @@ def encrypt(key: str, value: Any, path_manager) -> Any:
     if not plain_txt:
         return ""
 
-    raw = _encrypt_bytes(_get_or_create_key(path_manager), plain_txt.encode("utf-8"))
+    raw = _encrypt_bytes(_get_or_create_key(), plain_txt.encode("utf-8"))
     token = base64.urlsafe_b64encode(raw).decode("ascii")
     return token
 
 
-def decrypt(key: str, value: Any, path_manager) -> Any:
+def decrypt(key: str, value: Any) -> Any:
     if value is None:
         return ""
 
@@ -112,7 +113,7 @@ def decrypt(key: str, value: Any, path_manager) -> Any:
 
     try:
         raw = base64.urlsafe_b64decode(value.encode("ascii"))
-        return _decrypt_bytes(_get_or_create_key(path_manager), raw).decode("utf-8")
+        return _decrypt_bytes(_get_or_create_key(), raw).decode("utf-8")
     except (ValueError, RuntimeError) as e:
         logger.warning("Unable to decrypt setting '%s': %s. Using empty value.", key, e)
         return ""

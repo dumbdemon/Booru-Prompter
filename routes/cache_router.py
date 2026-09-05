@@ -20,9 +20,9 @@ def register_routes(routes_instance):
             duration: float = time.total_seconds()
             errors = 0
 
-            for key in cache_manager.iterkeys():
+            for key in cache_manager.cache.iterkeys():
                 try:
-                    cache_manager.touch(key, duration, True)
+                    cache_manager.cache.touch(key, duration, True)
                 except TimeoutError:
                     errors += 1
 

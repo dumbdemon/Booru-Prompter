@@ -3,10 +3,12 @@ import traceback
 import tomllib
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError, URLError
-from .managers import get_setting, setting, paths
+from .config_manager import get_setting, setting, BooruDictionary
+from .paths_manager import paths
 from .logger import get_logger
 from datetime import timedelta
 from .cache_manager import cache_manager
+from .booru_tags import BooruTags, create_booru_tags, create_error_tags
 
 logging = get_logger("booru_getter")
 
@@ -15,7 +17,7 @@ with open(pyproject, "rb") as file:
     pyproject_data = tomllib.load(file)
 version = pyproject_data.get("project", {}).get("version")
 
-HostURL = get_setting(setting.booru_site)
+HostURL = BooruDictionary[get_setting(setting.booru_site)]
 userid = get_setting(setting.booru_user_id)
 headers = {"User-Agent": f"BooruPrompter/{version} (user #{userid})"}
 
@@ -62,7 +64,7 @@ def set_duration() -> float or None:
     return duration
 
 
-def get_tags_by_url(url: str, remove_underscores: bool, ref_code=None) -> {}:
+def get_tags_by_url(url: str, remove_underscores: bool, ref_code=None) -> BooruTags:
     duration = set_duration()
 
     index = url.find("?")
@@ -77,11 +79,11 @@ def get_tags_by_url(url: str, remove_underscores: bool, ref_code=None) -> {}:
 
     if cache_manager.hasattr(ref_code):
         if get_setting(setting.cache_refresh_on_use, True):
-            cache_manager.touch(ref_code, duration)
+            cache_manager.cache.touch(ref_code, duration)
 
-        old_tags, tag = cache_manager.get(ref_code, True)
+        old_tags, tag = cache_manager.cache.get(ref_code, tag=True)
         if old_tags is not None and tag is HostURL:
-            return cache_manager.get(ref_code)
+            return create_booru_tags(cache_manager.cache.get(ref_code))
 
     url = construct_url(url)
 
@@ -90,29 +92,29 @@ def get_tags_by_url(url: str, remove_underscores: bool, ref_code=None) -> {}:
     else:
         raise ValueError from None
     message = None
+    booru_tags: BooruTags = None
 
     try:
+        if userid == "0000000" or not userid:
+            raise ValueError("No userid provided. Please provide a User ID.")
+
         with urlopen(req) as response:  # skipcq: BAN-B310
             data = json.load(response)
 
-            all_tags = {
-                "all_tags": butify(data["tag_string"], remove_underscores),
-                "tags": butify(data["tag_string_general"], remove_underscores),
-                "artist_tags": butify(data["tag_string_artist"], remove_underscores),
-                "character_tags": butify(
-                    data["tag_string_character"], remove_underscores
-                ),
-                "copyright_tags": butify(
-                    data["tag_string_copyright"], remove_underscores
-                ),
-                "meta_tags": butify(data["tag_string_meta"], remove_underscores),
-            }
-
-            cache_manager.set(
-                key=ref_code, value=all_tags, expire=duration, tag=HostURL
+            booru_tags = BooruTags(
+                all_tags=butify(data["tag_string"], remove_underscores),
+                tags=butify(data["tag_string_general"], remove_underscores),
+                artist_tags=butify(data["tag_string_artist"], remove_underscores),
+                character_tags=butify(data["tag_string_character"], remove_underscores),
+                copyright_tags=butify(data["tag_string_copyright"], remove_underscores),
+                meta_tags=butify(data["tag_string_meta"], remove_underscores),
             )
 
-            return all_tags
+            cache_manager.cache.set(
+                key=ref_code, value=booru_tags.as_dict(), expire=duration, tag=HostURL
+            )
+
+            return booru_tags
     except HTTPError as e:
         message = f"HTTP Error Status Code {e.code}"
     except URLError as e:
@@ -121,13 +123,6 @@ def get_tags_by_url(url: str, remove_underscores: bool, ref_code=None) -> {}:
         message = f"Something went wrong: {str(e)}"
         logging.error(traceback.format_exc())
 
-    all_tags = {
-        "all_tags": message,
-        "tags": message,
-        "artist_tags": message,
-        "character_tags": message,
-        "copyright_tags": message,
-        "meta_tags": message,
-    }
+    booru_tags = create_error_tags(message)
 
-    return all_tags
+    return booru_tags

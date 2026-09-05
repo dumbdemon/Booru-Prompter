@@ -22,10 +22,12 @@ async function loadBooruSettings() {
         console.error("Error loading BooruPrompter settings:", error); // skipcq: JS-0002
         // Return fallback settings structure
         return {
-            booru_site: { current_value: "https://danbooru.donmai.us/" },
+            booru_site: { current_value: "Danbooru" },
             booru_username: { current_value: "" },
             booru_api_token: { current_value: "" },
             booru_user_id: { current_value: "0000000" },
+
+            tags_artist_prefix: { current_value: "by" },
 
             cache_purge_on_startup: { current_value: false },
             cache_use_rolling_delete: { current_value: true },
@@ -109,6 +111,7 @@ app.registerExtension({
             "booru_username": "BooruPrompter.Boorus.username",
             "booru_api_token": "BooruPrompter.Boorus.api_token",
             "booru_user_id": "BooruPrompter.Boorus.booruUserId",
+            "tags_artist_prefix": "BooruPrompter.Tags.artistPrefix",
             "cache_purge_on_startup": "BooruPrompter.CacheSettings.purgeOnStarUp",
             "cache_use_rolling_delete": "BooruPrompter.CacheSettings.useRollingDelete",
             "cache_refresh_on_use": "BooruPrompter.CacheSettings.refreshOnUse",
@@ -135,10 +138,10 @@ app.registerExtension({
             id: "BooruPrompter.Boorus.select_booru",
             name: "Select Booru",
             type: "combo",
-            defaultValue: "https://danbooru.donmai.us/",
+            defaultValue: "Danbooru",
             options: [
-                { text: "Danbooru", value: "https://danbooru.donmai.us/" },
-                { text: "E621", value: "https://e621.net/" }
+                "Danbooru",
+                "E621"
             ],
             tooltip: "Choose which booru site to use.",
             onChange: async (newVal, oldVal) => {
@@ -178,6 +181,17 @@ app.registerExtension({
             onChange: async (newVal) => {
                 console.log("Booru API token changed"); // skipcq: JS-0002
                 await saveBooruSetting("booru_api_token", newVal);
+            }
+        },
+        {
+            id: "BooruPrompter.Tags.artistPrefix",
+            name: "Artist Tag Prefix",
+            defaultValue: "by",
+            type: "text",
+            tooltip: "The prerfix for artist tags. Spaces/underscores are added by default.",
+            onChange: async (newVal, oldVal) => {
+                console.log(`Artist Tag Prefix on Startup was changed from "${oldVal}" to "${newVal}"`); // skipcq: JS-0002
+                await saveBooruSetting("tags_artist_prefix", newVal);
             }
         },
         {

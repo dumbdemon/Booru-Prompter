@@ -1,7 +1,7 @@
 import shutil
 from diskcache import Cache
-from typing import Any
-from .managers import paths, get_setting, setting
+from .config_manager import get_setting, setting
+from .paths_manager import paths
 from .logger import get_logger
 
 logger = get_logger("cache.manager")
@@ -21,23 +21,15 @@ class CacheManager:
                 logger.info("Cache has been purged")
 
     def _new(self):
-        self.cache = Cache(self.cache_path.resolve().as_posix())
-        logger.info("New cache has been created")
-
-    def get(self, key: str, tag=False) -> Any or (Any, None):
-        return self.cache.get(key, tag=tag)
-
-    def set(self, key: str, value: {}, tag: str, expire: float = None):
-        self.cache.set(key=key, value=value, expire=expire, tag=tag, retry=True)
-
-    def touch(self, key: str, expire: float, retry=False):
-        self.cache.touch(key, expire, retry)
+        self._cache = Cache(self.cache_path.resolve().as_posix())
+        logger.info("Cache Populated")
 
     def hasattr(self, key: str) -> bool:
-        return key in self.cache
+        return key in self._cache
 
-    def iterkeys(self, reverse=False):
-        return self.cache.iterkeys(reverse=reverse)
+    @property
+    def cache(self):
+        return self._cache
 
 
 cache_manager = CacheManager()
