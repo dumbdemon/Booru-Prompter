@@ -4,7 +4,7 @@ import logging
 try:
     from server import PromptServer
     from aiohttp import web
-    from .src.booru_prompter.config_manager import get_settings, is_known_setting
+    from .src.booru_prompter.managers import get_settings, is_known_setting
 
     try:
         from .routes import register_routes

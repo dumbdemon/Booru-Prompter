@@ -1,8 +1,7 @@
 from comfy_api.latest import io
-from .get_booru_tags import get_tags_by_code, get_tags_by_url
-from .config_manager import get_setting, setting
-from .booru_tags import BooruTags, create_booru_tags
-from .cache_manager import cache_manager
+from .managers import get_setting, setting, cache_manager
+from .tags.get_booru_tags import get_tags_by_code, get_tags_by_url
+from .tags.booru_tags import BooruTags, create_booru_tags
 import re
 
 
@@ -135,7 +134,7 @@ class GetTagsByCode(io.ComfyNode):
             display_name="Get Tags (ID)",
             category=BooruPrompter,
             inputs=[
-                io.Int.Input("booru_id", default=0),
+                io.Int.Input("booru_id", default=1, min=1, max=0xFFFFFFFFFFFFF),
                 io.Boolean.Input(
                     "remove_underscores",
                     display_name="Remove Underscores",

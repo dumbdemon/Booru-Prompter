@@ -1,6 +1,6 @@
 import json
 import traceback
-from ..src.booru_prompter.logger import get_logger
+from ..src.booru_prompter.utils.logger import get_logger
 from aiohttp import web
 from .base_router import route_error_handler, success_response, error_response
 
@@ -15,7 +15,7 @@ def register_routes(routes_instance):
     @route_error_handler
     async def get_boooru_settings(request):
         try:
-            from ..src.booru_prompter.config_manager import get_settings
+            from ..src.booru_prompter.managers import get_settings
 
             settings = get_settings()
             settings_info = settings.list_all_settings()
@@ -37,7 +37,7 @@ def register_routes(routes_instance):
     @route_error_handler
     async def update_boooru_settings(request):
         try:
-            from ..src.booru_prompter.config_manager import (
+            from ..src.booru_prompter.managers import (
                 get_settings,
                 is_known_setting,
             )
@@ -96,7 +96,7 @@ def register_routes(routes_instance):
     @route_error_handler
     async def reset_boooru_settings(request):
         try:
-            from ..src.booru_prompter.config_manager import get_settings
+            from ..src.booru_prompter.managers import get_settings
 
             settings = get_settings()
             settings.reset_all()

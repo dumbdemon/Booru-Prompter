@@ -1,6 +1,6 @@
 from comfy_api.latest import io, ComfyExtension
 from .src.booru_prompter.nodes import GetTagsByCode, GetTagsByURL, ReadCache
-from .src.booru_prompter.logger import configure_logging, get_logger
+from .src.booru_prompter.utils.logger import configure_logging, get_logger
 
 logger = get_logger("BooruPrompter.init")
 

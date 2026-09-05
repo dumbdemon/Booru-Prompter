@@ -5,7 +5,7 @@ import folder_paths
 class PathManager:
     def __init__(self):
         # Base Paths
-        self.ext_path = Path(__file__).resolve().parent.parent.parent
+        self.ext_path = Path(__file__).resolve().parent.parent.parent.parent
         self.user_path = Path(folder_paths.get_user_directory())
 
         # Special Paths
@@ -23,6 +23,3 @@ class PathManager:
 
     def get_pyproject(self) -> Path:
         return self.ext_path / "pyproject.toml"
-
-
-paths = PathManager()

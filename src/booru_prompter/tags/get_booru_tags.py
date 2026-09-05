@@ -3,12 +3,11 @@ import traceback
 import tomllib
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError, URLError
-from .config_manager import get_setting, setting, BooruDictionary
-from .paths_manager import paths
-from .logger import get_logger
 from datetime import timedelta
-from .cache_manager import cache_manager
 from .booru_tags import BooruTags, create_booru_tags, create_error_tags
+from ..managers import get_setting, setting, paths, cache_manager
+from ..managers.config_manager import BooruDictionary
+from ..utils.logger import get_logger
 
 logging = get_logger("booru_getter")
 

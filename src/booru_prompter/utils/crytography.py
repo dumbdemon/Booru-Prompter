@@ -3,7 +3,7 @@ import base64
 from typing import Any
 from pathlib import Path
 from .logger import get_logger
-from .paths_manager import paths
+from ..managers.paths_manager import PathManager as paths
 
 logger = get_logger("crytography")
 
@@ -27,7 +27,7 @@ def _get_or_create_key() -> bytes:
             "blake3 is required for encrypted settings. It is bundled with ComfyUI."
         )
 
-    key_path: Path = paths.get_user_path(KEY_FILENAME)
+    key_path: Path = paths().get_user_path(KEY_FILENAME)
     if key_path.is_file():
         raw = key_path.read_bytes().strip()
         # Expect 64 hex chars encoding 32 bytes.  Old Fernet keys are 44 chars;

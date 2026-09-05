@@ -1,4 +1,4 @@
-from ..src.booru_prompter.logger import get_logger
+from ..src.booru_prompter.utils.logger import get_logger
 from .base_router import route_error_handler, success_response, error_response
 
 logger = get_logger("routes.cache")
@@ -12,7 +12,7 @@ def register_routes(routes_instance):
     @route_error_handler
     async def reset_all_cache_timer(request):
         try:
-            from ..src.booru_prompter.cache_manager import cache_manager
+            from ..src.booru_prompter.managers import cache_manager
             from datetime import timedelta
 
             data = await request.json()

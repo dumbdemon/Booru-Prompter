@@ -4,7 +4,7 @@ from functools import wraps
 
 from aiohttp import web
 
-from ..src.booru_prompter.logger import get_logger
+from ..src.booru_prompter.utils.logger import get_logger
 
 logger = get_logger("routes.settings")
 

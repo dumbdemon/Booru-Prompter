@@ -2,9 +2,9 @@ import yaml
 import traceback
 from typing import Any, Dict, Optional
 from pydantic import BaseModel, Field, ValidationError
-from .paths_manager import paths
-from .logger import get_logger
-from .crytography import decrypt, encrypt
+from .paths_manager import PathManager as paths
+from ..utils.logger import get_logger
+from ..utils.crytography import decrypt, encrypt
 
 logging = get_logger("managers")
 
@@ -27,9 +27,6 @@ class SettingsDefinition:
         self.cache_use_rolling_delete = "cache_use_rolling_delete"
         self.cache_refresh_on_use = "cache_refresh_on_use"
         self.cache_rolling_rate = "cache_rolling_rate"
-
-
-setting = SettingsDefinition()
 
 
 class BooruSettings(BaseModel):
@@ -68,14 +65,14 @@ class ConfigManager:
         self.data: Optional[Dict[str, Any]] = {}
         self._model: BooruSettings = BooruSettings()
 
-        settings = paths.get_user_path(self.config_name)
+        settings = paths().get_user_path(self.config_name)
 
         if settings.exists() and settings.is_file():
             try:
                 with settings.open(mode="r", encoding="utf-8") as file:
                     data = yaml.safe_load(file)
                     for key, value in data.items():
-                        if key == setting.booru_site:
+                        if key == SettingsDefinition().booru_site:
                             for site, url in BooruDictionary.items():
                                 if value.casefold() in url.casefold():
                                     value = site
@@ -107,7 +104,7 @@ class ConfigManager:
         if not hasattr(self._model, key):
             return False
 
-        if key == setting.booru_user_id:
+        if key == SettingsDefinition().booru_user_id:
             import re
 
             patttern = re.compile(r"^\d+$")
@@ -140,7 +137,7 @@ class ConfigManager:
         return {key: self.get_setting_info(key) for key in BooruSettings.model_fields}
 
     def save(self) -> bool:
-        settings = paths.get_user_path(self.config_name)
+        settings = paths().get_user_path(self.config_name)
         try:
             with settings.open(mode="w", encoding="utf-8") as file:
                 data = self._model.model_dump()
